@@ -8,11 +8,13 @@ CC         = g++
 SRC        = src
 CFLAGS     = -O -std=c++11 -Wall
 
-all: evolution
+all: evolution rungekutta
 
 %.o: %.cc
 	${CC} ${CFLAGS} -c -o $@ $< 
 evolution : evolution.cc
+	${CC} ${INCLUDES} -o $@  ${CFLAGS} $^ ${LIB}
+rungekutta : runge_kutta.cc
 	${CC} ${INCLUDES} -o $@  ${CFLAGS} $^ ${LIB}
 clean:
 	rm -f *.o *~
