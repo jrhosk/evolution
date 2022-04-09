@@ -11,8 +11,8 @@ CFLAGS     = -O -std=c++11 -Wall
 all: evolution rungekutta
 
 %.o: %.cc
-	${CC} ${CFLAGS} -c -o $@ $< 
-evolution : evolution.cc
+	${CC} ${INCLUDES} ${CFLAGS} -c -o $@ $< 
+evolution : evolution.cc ${SRC}/FemtoEvolve.o
 	${CC} ${INCLUDES} -o $@  ${CFLAGS} $^ ${LIB}
 rungekutta : runge_kutta.cc
 	${CC} ${INCLUDES} -o $@  ${CFLAGS} $^ ${LIB}

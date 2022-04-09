@@ -8,6 +8,8 @@
 #include <fstream>
 #include <sstream>
 
+#include <FemtoEvolve.hh>
+
 std::vector <float> read_data(){
     std::vector <float> value;
     std::fstream input;
@@ -29,7 +31,7 @@ std::vector <float> read_data(){
     
     return value;
 }
-
+/*
 float stage(float x, float u){
     return x + u;
 }
@@ -63,16 +65,24 @@ void runge_kutta(std::function<float(float, float)> fun, std::vector<float> v){
     }
 
 };
-
+*/
 int main(int argc, char *argv[]){
     float vals[] = {1., 2., 3., 4., 5., 6., 7., 8., 9., 10.};
 
     std::vector<float> v(vals, vals + sizeof(vals) / sizeof(float));
     std::vector <float> x = read_data();
 
-    std::function<float(float, float)> fn = stage;
-    
+    //  std::function<float(float, float)> fn = stage;
+    //  runge_kutta(fn, v);
 
-    runge_kutta(fn, v);
+    std::cout << "Instance created." << std::endl;
+    FemtoEvolve *evolve = new FemtoEvolve();
 
+    std::cout << "Initializing ...." << std::endl;
+    evolve->Init(v);
+
+    std::cout << "Running ..." << std::endl;
+    evolve->Run();
+
+    return 0;
 }
