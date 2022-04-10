@@ -12,7 +12,7 @@ all: evolution rungekutta
 
 %.o: %.cc
 	${CC} ${INCLUDES} ${CFLAGS} -c -o $@ $< 
-evolution : evolution.cc ${SRC}/FemtoEvolve.o
+evolution : evolution.cc ${SRC}/FemtoEvolve.o ${SRC}/gpd.o
 	${CC} ${INCLUDES} -o $@  ${CFLAGS} $^ ${LIB}
 rungekutta : runge_kutta.cc
 	${CC} ${INCLUDES} -o $@  ${CFLAGS} $^ ${LIB}

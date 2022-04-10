@@ -60,7 +60,8 @@
 #include <fstream>
 
 //Include Header File
-#include "../include/gpd.h"
+//#include "../include/gpd.h"
+#include "gpd.hh"
 
 //Necessary for output
 using namespace std;

@@ -15,7 +15,7 @@
 
 
 FemtoEvolve::FemtoEvolve(){
-
+  
 }
 
 FemtoEvolve::~FemtoEvolve(){
@@ -23,56 +23,45 @@ FemtoEvolve::~FemtoEvolve(){
 }
 
 void FemtoEvolve::Init(std::vector<float> arr){
-  this->grid = arr;
-};
-
+  //
+  // Here we initialize a vector, grid, that contains the values for x along
+  // with a vector containing the initial values for the gpdHu.
+  //
+  
+}
 void FemtoEvolve::Run(){
   this->RungeKutta();
 };
 
 float FemtoEvolve::Alpha(float square, float lambda) {
-    return 4*3.141/(9*log(square/pow(lambda, 2)));
+  return 0.;
 }
 
 float FemtoEvolve::Stage(float x, float u){
-  float alpha = 0.2;
-  float integral = 1;
-  float zeta = 0.;
-  float t = 0.;
-
-  for(auto i = 0; i < (int)this.grid.size(); i++) this->_u.push_back(gpdHu(x, zeta, t));
-  
-  return ((4./3.)*alpha/(2*3.141))*( integral + u*(2*log(1 - x) + 1.5));
+  return 0.;
 }
 
-float FemtoEvolve::Integral(std::function<float(float, float)> function, float start, float stop){
-  float integral = 0;
-
-  for(auto j=start; j < stop; j++){
-    float dx = 0.001;
-    integral += function(0.001*j, 2)*dx;
-  }
-
-  return integral;
+float FemtoEvolve::Integral(float x, float u){
+  return 0.;;
 }
 
 void FemtoEvolve::RungeKutta(){
-    float h = 0.1;
-    float y = 1.;
+  int n = 1;
 
-    std::cout << "Grid size: " << this->grid.size() << std::endl;
+  float u = 0;
+  float h = 0.;
+  float q = log(0.09362);
+  float dq = int(log(q) - log(1)/n);
     
-    for(auto i = 0; i < (int)this->grid.size(); i++){
-        float x = h*this->grid[i];
+    for(auto i = 0; i < n; i++){
+      h = dq;
         
-        float k1 = this->Stage(x, y);
-        float k2 = this->Stage(x + 0.5*h, y + 0.5*h*k1);
-        float k3 = this->Stage(x + 0.5*h, y + 0.5*h*k2);
-        float k4 = this->Stage(x + h, y + h*k3);
+      float k1 = this->Stage(q, u);
+      float k2 = this->Stage(q + 0.5*h, u + 0.5*h*k1);
+      float k3 = this->Stage(q + 0.5*h, u + 0.5*h*k2);
+      float k4 = this->Stage(q + h, u + h*k3);
 
-        y += (h/6.)*(k1 + 2.*k2 + 2.*k3 + k4);
-
-        std::cout << "x: " << x << "  >> Y(x_i): " << y << std::endl;
+      u += (h/6.)*(k1 + 2.*k2 + 2.*k3 + k4);
     }
 }
 
