@@ -7,43 +7,77 @@
 #include <functional>
 #include <fstream>
 #include <sstream>
+#include <map>
+#include <cstring>
+#include <sstream>
 
 #include <FemtoEvolve.hh>
 
-std::vector <float> read_data(){
-    std::vector <float> value;
-    std::fstream input;
-    std::string line;
+std::map <std::string, std::vector<float>> read_data(){
+  std::map <std::string, std::vector<float>> value;
+  std::fstream input;
+  std::string line;
 
-    input.open("data/x_data.csv", std::fstream::in);
+  char *token;
+  
+  input.open("data/quv_evol.csv", std::fstream::in);
 
-    if(!input.is_open()){
-         perror("Not open.");
-    }
+  if(!input.is_open()){
+    perror("Not open.");
+  }
+
+
+  std::cout << "Opening data file." << std::endl;
+
+  while(!input.eof()){
+
+    std::getline(input, line);
+    token = new char[line.size() + 1];
+    strcpy(token, line.c_str());
+
+    token = strtok(token, ",");
+    std::cout << atof(token) << std::endl;
+    token = strtok(NULL, ",");
+    std::cout << atof(token) << std::endl;
+    token = strtok(NULL, ",");
+    std::cout << atof(token) << std::endl;
     
-
-    std::cout << "Opening data file." << std::endl;
-    while(input.good()){
-        std::getline(input, line);
-        value.push_back(stof(line));
-    }
-    input.close();
-    
-    return value;
+  }
+  input.close();
+  
+  return value;
 }
 
 int main(int argc, char *argv[]){
-    std::vector <float> x = read_data();
+  std::map <std::string, std::vector<float>> values;
 
+  // such a terrible way to do this ...
+  float qs[] = {
+    0.093619999999999995,
+    0.16796523857980172,
+    0.30134929898707241,
+    0.54065591647318556,  
+    0.96999999999999975,
+    1.1623483397359242,
+    1.3928388277184118,
+    1.6690349473383783,
+    2.00000000000000000};
+  
+  values["x"] = std::vector<float>(9, 0.20951355844953223);
+  values["qs"] = std::vector<float>(qs, qs + sizeof(qs) / sizeof(float) );
 
-    std::cout << "Instance created." << std::endl;
-    FemtoEvolve *evolve = new FemtoEvolve();
+  std::cout << "Instance created." << std::endl;
+  FemtoEvolve *evolve = new FemtoEvolve();
 
-    std::cout << "Initializing ...." << std::endl;
-    evolve->Init(x);
+  std::cout << "Initializing ...." << std::endl;
+  evolve->Init(values);
 
-    std::cout << "Running ..." << std::endl;
-    evolve->Run();
+  std::cout << "Running ..." << std::endl;
+  evolve->Run();
 
-    return 0;
+  // for(auto i = 0; i < (int)(evolve->kinematics["qs"].size()); i++){
+  //   std::cout << "Alpha: " << evolve->kinematics["qs"][i] << " " << evolve->Alpha(evolve->kinematics["qs"][i]) << std::endl;
+  // }
+
+  return 0;
 }
