@@ -17,4 +17,4 @@ evolution : evolution.cc ${SRC}/FemtoEvolve.o ${SRC}/gpd.o
 rungekutta : runge_kutta.cc
 	${CC} ${INCLUDES} -o $@  ${CFLAGS} $^ ${LIB}
 clean:
-	rm -f *.o *~
+	rm -f *.o *~ src/*.o

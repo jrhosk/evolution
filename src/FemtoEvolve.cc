@@ -44,7 +44,14 @@ void FemtoEvolve::Run(){
 
 float FemtoEvolve::Alpha(float square) {
 
-  float mass_thresholds[] = {pow(1.4, 2), pow(4.5, 2) , pow(170, 2)};
+  //  float mass_thresholds[] = {pow(1.4, 2), pow(4.5, 2) , pow(170, 2)};
+  
+  float mass_thresholds[] = {0., 0. , 0.};
+
+  mass_thresholds[0] = pow(1.4, 2);
+  mass_thresholds[1] = pow(4.5, 2);
+  mass_thresholds[2] = pow(170., 2);
+  
   float lambda_nf4 = 0.215;
   float alpha_inv = 0.;
   
