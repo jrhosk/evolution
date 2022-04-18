@@ -27,13 +27,17 @@ FemtoEvolve::~FemtoEvolve(){
 
 void FemtoEvolve::Init(std::map<std::string, std::vector<float>> arr){
   //
-  // Here we initialize a vector, grid, that contains the values for x along
-  // with a vector containing the initial values for the gpdHu.
+  // Initialize map containing the kinematic variables x and Q2,
+  // this provides a key:value pair where the value is a vector
+  // of values.
   //
 
   this->kinematics = arr;
 
-  // Setup grid spacing
+  // Setup a vector containing the delta log(Q2) for each step in the
+  // runge-kutta algorithm. As far as I can tell this should be done
+  // as log(dq_f) - log(df_i)
+  
   for(auto i = 0; i < (int)(this->kinematics["qs"].size() - 1); i++){
     this->dq.push_back(log(this->kinematics["qs"][i+1]) - log(this->kinematics["qs"][i]));
   }
@@ -86,6 +90,9 @@ float FemtoEvolve::Alpha(float square) {
 }
 
 float FemtoEvolve::Stage(float q, float u, float x){
+  // Calculate the endpoint value for the input variables. The input
+  // float q represents the log(Q2) value.
+  
   return ( (4./3.)*(Alpha(exp(q))/(2*PI)) )*( u*(2*log(1 - x) + 1.5)  );
 }
 
@@ -96,16 +103,22 @@ float FemtoEvolve::Integral(float x, float u){
 void FemtoEvolve::RungeKutta(){
   int n = this->kinematics["qs"].size();
 
-  // Set the initial value for u
-  // float u = gpdHu(this->kinematics["x"][0], 0., 0.);
+  // Set the initial value for x. We are doing this for
+  // a single x value so I just use the first index value.
   float x = this->kinematics["x"][0]; // Only one choice for x at the moment
+
+  // Set U(x, Q2) to xU(x, Q2) and use for runge-kutta.
   float u = x*gpdHu(this->kinematics["x"][0], 0., 0.);
   float h = 0.;
   float q = 0.;
     
   for(auto i = 0; i < (n - 1); i++){
     x = this->kinematics["x"][i];
+
+    // The grid steps are set to delta log(Q2).
     h = this->dq[i];
+
+    // Variable Q2 is set to log(Q2)
     q = log(this->kinematics["qs"][i]);
 
     float k1 = this->Stage(q, u, x);
