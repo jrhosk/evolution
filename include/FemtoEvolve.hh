@@ -7,7 +7,7 @@ public:
   FemtoEvolve();
   ~FemtoEvolve();
   
-  void Init(std::map<std::string, std::vector<float>>);
+  void Init(std::map<std::string, std::vector<float>>, bool);
   void Run();
 
   float Alpha(float square);
@@ -15,13 +15,10 @@ public:
   std::map<std::string, std::vector<float>> kinematics;
   
  private:
-  int index_cache;
-
   std::fstream outfile;
   
   std::vector<float> dq;
-  std::vector<float> _u;
-
+  std::vector<float> cache;
   
   float Integral(float x, float u);
   float Stage(float q, float u, float x);

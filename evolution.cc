@@ -70,7 +70,7 @@ int main(int argc, char *argv[]){
   FemtoEvolve *evolve = new FemtoEvolve();
 
   std::cout << "Initializing ...." << std::endl;
-  evolve->Init(values);
+  evolve->Init(values, true);
 
   std::cout << "Running ..." << std::endl;
   evolve->Run();
