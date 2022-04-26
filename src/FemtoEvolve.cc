@@ -102,6 +102,11 @@ float FemtoEvolve::Stage(float q, float u, float x){
 }
 
 float FemtoEvolve::Integral(float y, float u){
+  float x = 1; // needs to be the globally updated x
+  float dy = 0;
+  
+  int i = 0; // Just so the code complies and we can test data file
+  
   float upper = (1 + std::pow(x/y, 2))*this->cache[i] - 2*u;
   float lower = 1 - x/y;
 
@@ -141,7 +146,7 @@ void FemtoEvolve::RungeKutta(){
       u += (h/6.)*(k1 + 2.*k2 + 2.*k3 + k4);
 
       // Cache the U(Q2, x) values for each x grid point
-      this->cached[j] = u;
+      this->cache[j] = u;
       
       this->outfile << x << "\t"
 		    << this->kinematics["qs"][i] << "\t"

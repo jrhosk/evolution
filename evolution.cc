@@ -12,6 +12,7 @@
 #include <sstream>
 
 #include <FemtoEvolve.hh>
+#include <DataFile.hh>
 
 std::map <std::string, std::vector<float>> read_data(){
   std::map <std::string, std::vector<float>> value;
@@ -66,6 +67,13 @@ int main(int argc, char *argv[]){
   values["x"] = std::vector<float>(9, 0.20951355844953223);
   values["qs"] = std::vector<float>(qs, qs + sizeof(qs) / sizeof(float) );
 
+  std::cout << "Reading data file..." << std::endl;
+  
+  DataFile *data = new DataFile("data/evodata.csv");
+  data->ReadCSV();
+  data->PrintCSV();
+
+  /*
   std::cout << "Instance created." << std::endl;
   FemtoEvolve *evolve = new FemtoEvolve();
 
@@ -74,7 +82,7 @@ int main(int argc, char *argv[]){
 
   std::cout << "Running ..." << std::endl;
   evolve->Run();
-
+  */
   // for(auto i = 0; i < (int)(evolve->kinematics["qs"].size()); i++){
   //   std::cout << "Alpha: " << evolve->kinematics["qs"][i] << " " << evolve->Alpha(evolve->kinematics["qs"][i]) << std::endl;
   // }
