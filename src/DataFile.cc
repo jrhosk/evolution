@@ -10,12 +10,6 @@
 
 void DataFile::ReadCSV(){
   bool bFirstLineRead = false;
-  //  std::fstream input;
-  //input.open("data/evodata.csv", std::fstream::in);
-
-  //  if(!input.is_open()){
-  //  perror("Not open.");
-  //}
 
   std::string line;
   
@@ -27,32 +21,26 @@ void DataFile::ReadCSV(){
 
       bFirstLineRead = true;
 
-      std::cout << "HEADER LINE: " << LineVector.front() << "\t" << LineVector.back() << std::endl;
     } else {
       std::getline(*this, line);
       boost::split(LineVector, line, boost::is_any_of(","));
 
-      this->x.push_back(atof(LineVector[X_INDEX].c_str()));
-      this->qSquared.push_back(atof(LineVector[QS_INDEX].c_str()));
+      this->values["x"].push_back(atof(LineVector[X_INDEX].c_str()));
+      this->values["qs"].push_back(atof(LineVector[QS_INDEX].c_str()));
     }
   }
   
 }
 
-void DataFile::PrintCSV() const {
-  for(auto i = 0; i < (int)(this->x.size()); i++){
-    std::cout << this->x[i] << "\t" << this->qSquared[i] << std::endl;
+void DataFile::PrintCSV(){
+  for(auto i = 0; i < (int)(this->values["x"].size()); i++){
+    std::cout << this->values["x"][i] << "\t" << this->values["qs"][i] << std::endl;
   }
 }
 
-std::vector <double> DataFile::GetXVector() const
+std::vector <float> DataFile::GetValue(const std::string column)
 {
-  return this->x;
-}
-
-std::vector <double> DataFile::GetQSquaredVector() const
-{
-  return this->qSquared;
+  return this->values[column];
 }
 
 #endif

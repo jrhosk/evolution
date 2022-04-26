@@ -8,6 +8,7 @@
 #include <vector>
 #include <string>
 #include <cstring>
+#include <map>
 
 // BOOST c++ libraries
 
@@ -18,8 +19,7 @@ class DataFile: private std::fstream {
 
 private:
 
-  std::vector <double> x;
-  std::vector <double> qSquared;
+  std::map<std::string, std::vector <float>> values;
 
 public:
 
@@ -38,12 +38,11 @@ public:
   ~DataFile(){close();};
 
   void ReadCSV();
-  void PrintCSV() const;
+  void PrintCSV();
 
   //  int GetArraySize() const;
 
-  std::vector <double> GetXVector() const;
-  std::vector <double> GetQSquaredVector() const;
+  std::vector <float> GetValue(const std::string);
 
   std::vector<std::string> LineVector;
   
