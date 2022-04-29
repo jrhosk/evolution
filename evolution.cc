@@ -15,10 +15,10 @@
 #include <DataFile.hh>
 
 int main(int argc, char *argv[]){
-  std::map <std::string, std::vector<float>> values;
+  std::map <std::string, std::vector<double>> values;
 
   // such a terrible way to do this ...
-  // float qs[] = {
+  // double qs[] = {
   //   0.093619999999999995,
   //   0.16796523857980172,
   //   0.30134929898707241,
@@ -29,25 +29,25 @@ int main(int argc, char *argv[]){
   //   1.6690349473383783,
   //   2.00000000000000000};
   
-  // values["x"] = std::vector<float>(9, 0.20951355844953223);
-  // values["qs"] = std::vector<float>(qs, qs + sizeof(qs) / sizeof(float) );
+  // values["x"] = std::vector<double>(9, 0.20951355844953223);
+  // values["qs"] = std::vector<double>(qs, qs + sizeof(qs) / sizeof(double) );
 
   std::cout << "Reading data file..." << std::endl;
   
   DataFile *data = new DataFile("data/kinematics.csv");
   data->ReadCSV();
-  data->PrintCSV();
+  //  data->PrintCSV();
 
-  /*
+
   std::cout << "Instance created." << std::endl;
   FemtoEvolve *evolve = new FemtoEvolve();
 
   std::cout << "Initializing ...." << std::endl;
-  evolve->Init(values, true);
+  evolve->Init(data->GetValueMap(), true);
 
   std::cout << "Running ..." << std::endl;
   evolve->Run();
-  */
+
   // for(auto i = 0; i < (int)(evolve->kinematics["qs"].size()); i++){
   //   std::cout << "Alpha: " << evolve->kinematics["qs"][i] << " " << evolve->Alpha(evolve->kinematics["qs"][i]) << std::endl;
   // }

@@ -19,7 +19,7 @@ class DataFile: private std::fstream {
 
 private:
 
-  std::map<std::string, std::vector <float>> values;
+  std::map<std::string, std::vector <double>> values;
 
 public:
 
@@ -42,8 +42,9 @@ public:
 
   //  int GetArraySize() const;
 
-  std::vector <float> GetValue(const std::string);
-
+  std::vector <double> GetValue(const std::string);
+  std::map<std::string, std::vector <double>> GetValueMap();
+  
   std::vector<std::string> LineVector;
   
 };

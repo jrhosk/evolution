@@ -7,21 +7,28 @@ public:
   FemtoEvolve();
   ~FemtoEvolve();
   
-  void Init(std::map<std::string, std::vector<float>>, bool);
+  void Init(std::map<std::string, std::vector<double>>, bool);
   void Run();
 
-  float Alpha(float square);
+  double Alpha(double square);
 
-  std::map<std::string, std::vector<float>> kinematics;
+  std::map<std::string, std::vector<double>> kinematics;
   
  private:
   std::fstream outfile;
+
+  int index;
   
-  std::vector<float> dq;
-  std::vector<float> cache;
+  float endpoint;
+  float integral;
   
-  float Integral(float x, float u);
-  float Stage(float q, float u, float x);
+  std::vector<double> dq;
+  std::vector<double> dy;
+  std::vector<double> cache;
+  std::vector<double> u;
+  
+  double Integral(double u);
+  double Stage(double q, double u, double x);
 
   void RungeKutta();
   

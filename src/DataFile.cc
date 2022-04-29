@@ -38,9 +38,14 @@ void DataFile::PrintCSV(){
   }
 }
 
-std::vector <float> DataFile::GetValue(const std::string column)
+std::vector <double> DataFile::GetValue(const std::string column)
 {
   return this->values[column];
+}
+
+std::map<std::string, std::vector <double>> DataFile::GetValueMap()
+{
+  return this->values;
 }
 
 #endif
