@@ -17,15 +17,22 @@ public:
  private:
   std::fstream outfile;
 
-  int index;
-  
-  float endpoint;
-  float integral;
+  double endpoint;
+  double integral;
+
+  // Structure to organize current iteration state information
+  struct IterationState {
+    int index;
+
+    std::vector<double> u;
+    std::vector<double> cache;
+    
+  };
+
+  IterationState iteration;
   
   std::vector<double> dq;
   std::vector<double> dy;
-  std::vector<double> cache;
-  std::vector<double> u;
   
   double Integral(double u);
   double Stage(double q, double u, double x);

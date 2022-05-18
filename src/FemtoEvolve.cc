@@ -11,11 +11,10 @@
 #include <sstream>
 #include <map>
 
+#include <boost/math/constants/constants.hpp>
+
 #include <FemtoEvolve.hh>
 #include <gpd.hh>
-
-#define PI 3.14159265
-
 
 FemtoEvolve::FemtoEvolve(){
   
@@ -36,6 +35,7 @@ void FemtoEvolve::Init(std::map<std::string, std::vector<double>> arr, bool outf
     this->outfile.open("output.csv", std::fstream::out | std::fstream::app);
     if(!this->outfile.is_open()) std::cerr << "Error opening output csv file." << std::endl;
     this->outfile << "x\tqs\tendpoint\tintegral\txu" << std::endl;
+    //this->outfile << "x\tqs\txu" << std::endl;
   }
   
   this->kinematics = arr;
@@ -45,9 +45,12 @@ void FemtoEvolve::Init(std::map<std::string, std::vector<double>> arr, bool outf
   //
   
   for(auto i = 0; i < (int)(this->kinematics["x"].size()); i++) {
-    this->cache.push_back(this->kinematics["x"][i]*gpdHu(this->kinematics["x"][i], 0., 0.));
-    this->u.push_back(this->kinematics["x"][i]*gpdHu(this->kinematics["x"][i], 0., 0.));
-    // std::cout << "cache: " << this->cache.back() << std::endl;
+    // this->iteration.cache.push_back(this->kinematics["x"][i]*gpdHu(this->kinematics["x"][i], 0., 0.));
+    // this->iteration.u.push_back(this->kinematics["x"][i]*gpdHu(this->kinematics["x"][i], 0., 0.));
+
+    this->iteration.cache.push_back(gpdHu(this->kinematics["x"][i], 0., 0.));
+    this->iteration.u.push_back(gpdHu(this->kinematics["x"][i], 0., 0.));
+    // std::cout << "cache: " << this->iteration.cache.back() << std::endl;
   }
   
   // Setup a vector containing the delta log(Q2) for each step in the
@@ -66,8 +69,6 @@ void FemtoEvolve::Run(){
 
 double FemtoEvolve::Alpha(double square) {
 
-  //  double mass_thresholds[] = {pow(1.4, 2), pow(4.5, 2) , pow(170, 2)};
-  
   double mass_thresholds[] = {0., 0. , 0.};
 
   mass_thresholds[0] = pow(1.4, 2);
@@ -104,22 +105,22 @@ double FemtoEvolve::Alpha(double square) {
 
   double alpha = 1./alpha_inv;
 
-  return alpha*PI;
+  return alpha*boost::math::constants::pi<double>();
 }
 
 double FemtoEvolve::Stage(double q, double u, double x){
   // Calculate the endpoint value for the input variables. The input
   // double q represents the log(Q2) value.
 
-  float coeff = (4./3.)*(Alpha(exp(q))/(2*PI));
+  float coeff = (4./3.)*(Alpha(exp(q))/(2*boost::math::constants::pi<double>()));
   float endpoint = u*(2*log(1 - x) + 1.5);
   float integral = this->Integral(u);
 
   // For sanity checks
-  // this->endpoint = endpoint;
-  // this->integral = integral;
+  this->endpoint = coeff*endpoint;
+  this->integral = coeff*integral;
   
-  return (4./3.)*(Alpha(exp(q))/(2*PI))*(this->Integral(u) + u*(2*log(1 - x) + 1.5) );
+  return (4./3.)*(Alpha(exp(q))/(2*boost::math::constants::pi<double>()))*(this->Integral(u) + u*(2*log(1 - x) + 1.5) );
 }
 
 double FemtoEvolve::Integral(double u){
@@ -128,19 +129,19 @@ double FemtoEvolve::Integral(double u){
   double integral = 0.;
   double y = 0.; 
   
-  int index = this->index;
+  int index = this->iteration.index;
   
   double x = this->kinematics["x"][index];
 
   for(auto i = index; i < (int)(this->kinematics["x"].size() - 1); i++){
-    y = this->kinematics["x"][i+i];
-    upper = (1 + std::pow(x/y, 2))*(this->cache[i]) - 2.*u;
+    y = this->kinematics["x"][i+1];
+    upper = (1 + std::pow(x/y, 2))*(this->iteration.cache[i]) - 2.*u;
     lower = 1 - x/y;
 
     integral += (dy[i]/y)*(upper/lower);
   }
   return integral;
-}
+ }
 
 void FemtoEvolve::RungeKutta(){
   int n = this->kinematics["qs"].size();
@@ -157,10 +158,10 @@ void FemtoEvolve::RungeKutta(){
     
   for(auto i = 0; i < (n - 1); i++){
     for(auto j = 0; j < (m - 1); j++){ // This should be where we iterate on the x part of the grid
-      u = this->u[j];
+      u = this->iteration.u[j];
 
       // Internal index for x iteration
-      this->index = j; 
+      this->iteration.index = j; 
       
       x = this->kinematics["x"][j];
 
@@ -176,20 +177,20 @@ void FemtoEvolve::RungeKutta(){
       double k4 = this->Stage(q + h, u + h*k3, x);
     
       u += (h/6.)*(k1 + 2.*k2 + 2.*k3 + k4);
-      this->u[j] = u;
+      this->iteration.u[j] = u;
       
       this->outfile << x << "\t"
        		    << this->kinematics["qs"][i] << "\t"
-		    // << this->endpoint << "\t"
-		    // << this->integral << "\t"
-       		    << this->u[j] << std::endl;
+		    << this->endpoint << "\t"
+		    << this->integral << "\t"
+       		    << this->iteration.u[j] << std::endl;
 
       // std::cout << x << "\t"
       // 		<< this->kinematics["qs"][i] << "\t"
       // 		<< this->u[j] << std::endl;    
     }
     // Cache the U(Q2, x) values for each x grid point
-    this->cache = this->u;
+    this->iteration.cache = this->iteration.u;
     //    this->u.clear();
   }
 }

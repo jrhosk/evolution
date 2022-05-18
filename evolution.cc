@@ -17,21 +17,6 @@
 int main(int argc, char *argv[]){
   std::map <std::string, std::vector<double>> values;
 
-  // such a terrible way to do this ...
-  // double qs[] = {
-  //   0.093619999999999995,
-  //   0.16796523857980172,
-  //   0.30134929898707241,
-  //   0.54065591647318556,  
-  //   0.96999999999999975,
-  //   1.1623483397359242,
-  //   1.3928388277184118,
-  //   1.6690349473383783,
-  //   2.00000000000000000};
-  
-  // values["x"] = std::vector<double>(9, 0.20951355844953223);
-  // values["qs"] = std::vector<double>(qs, qs + sizeof(qs) / sizeof(double) );
-
   std::cout << "Reading data file..." << std::endl;
   
   DataFile *data = new DataFile("data/kinematics.csv");
@@ -47,10 +32,6 @@ int main(int argc, char *argv[]){
 
   std::cout << "Running ..." << std::endl;
   evolve->Run();
-
-  // for(auto i = 0; i < (int)(evolve->kinematics["qs"].size()); i++){
-  //   std::cout << "Alpha: " << evolve->kinematics["qs"][i] << " " << evolve->Alpha(evolve->kinematics["qs"][i]) << std::endl;
-  // }
 
   return 0;
 }
