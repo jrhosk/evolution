@@ -1,4 +1,4 @@
-# evolution
+# Evolution
 Accelerated GPD evolution code.
 
 ### Basic evolution example code
